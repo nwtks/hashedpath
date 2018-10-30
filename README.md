@@ -1,0 +1,3 @@
+# hashpath
+
+simple hash router.

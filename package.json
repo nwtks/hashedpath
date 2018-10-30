@@ -1,0 +1,20 @@
+{
+  "name": "hashpath",
+  "version": "0.0.1",
+  "description": "simple hash router.",
+  "author": "nwtks",
+  "license": "MIT",
+  "main": "dist/hashpath.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nwtks/hashpath"
+  },
+  "devDependencies": {
+    "rollup": "^0.66.0",
+    "rollup-plugin-buble": "^0.19.0",
+    "rollup-plugin-uglify": "^6.0.0"
+  },
+  "scripts": {
+    "build": "rollup -c"
+  }
+}
