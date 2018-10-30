@@ -12,7 +12,7 @@ function forward(router) {
   for (let i = 0; i < tos.length; i += 1) {
     const path = tos[i].path
     if (hp.length === path.length) {
-      const param = {}
+      const param = Object.create(null)
       let found = true
       for (let j = 0; j < path.length; j += 1) {
         const p = path[j]

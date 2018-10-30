@@ -14,7 +14,7 @@ function forward(router) {
   for (var i = 0; i < tos.length; i += 1) {
     var path = tos[i].path;
     if (hp.length === path.length) {
-      var param = {};
+      var param = Object.create(null);
       var found = true;
       for (var j = 0; j < path.length; j += 1) {
         var p = path[j];
