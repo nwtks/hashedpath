@@ -47,6 +47,10 @@ function hashpath() {
       }
       return router
     },
+    redirect(path) {
+      window.location.hash = path
+      return forward(router)
+    },
     start() {
       window.addEventListener('hashchange', () => forward(router))
       return forward(router)
