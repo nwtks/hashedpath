@@ -2,12 +2,17 @@ function forward(router) {
   const tos = router.tos
   const other = router.other
   const hash = window.location.hash
+  router.path = hash
   if (!hash) {
-    return other()
+    router.render = other
+    router.render()
+    return router.render
   }
   const hp = hash.split('/')
   if (!hp.length) {
-    return other()
+    router.render = other
+    router.render()
+    return router.render
   }
   for (let i = 0; i < tos.length; i += 1) {
     const path = tos[i].path
@@ -16,7 +21,7 @@ function forward(router) {
       let found = true
       for (let j = 0; j < path.length; j += 1) {
         const p = path[j]
-        if (p.charAt(0) === ':') {
+        if (p[0] === ':') {
           param[p.substring(1)] = hp[j]
         } else {
           if (p !== hp[j]) {
@@ -26,15 +31,21 @@ function forward(router) {
         }
       }
       if (found) {
-        return tos[i].to(param)
+        router.render = tos[i].to(param)
+        router.render()
+        return router.render
       }
     }
   }
-  return other()
+  router.render = other
+  router.render()
+  return router.render
 }
 
 function hashpath() {
   const router = {
+    path: null,
+    render: null,
     tos: [],
     other: null,
     route(path, to) {
