@@ -23,29 +23,17 @@ function forward(router) {
             }
           }
           if (found) {
-            const f = tos[i].to(param)
-            if (f.then) {
-              f.then(r => {
-                router.render = r
-                router.render()
-              })
-            } else {
-              router.render = f
-              router.render()
-            }
+            tos[i].to(param, next)
             return
           }
         }
       }
     }
   }
-  if (other.then) {
-    other.then(r => {
-      router.render = r
-      router.render()
-    })
-  } else {
-    router.render = other
+  other(next)
+
+  function next(f) {
+    router.render = f
     router.render()
   }
 }
