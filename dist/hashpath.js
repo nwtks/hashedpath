@@ -32,7 +32,7 @@ function forward(router) {
       }
     }
   }
-  other(next);
+  other({}, next);
 
   function next(f) {
     router.render = f;
