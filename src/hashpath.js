@@ -1,7 +1,9 @@
+const location = window.location
+
 function forward(router) {
   const tos = router.tos
   const other = router.other
-  const hash = window.location.hash
+  const hash = location.hash
   router.path = hash
   if (hash) {
     const hp = hash.split('/')
@@ -44,6 +46,7 @@ function hashpath() {
     render: null,
     tos: [],
     other: null,
+    hashchangeListener: null,
     route(path, to) {
       if (path && to) {
         if (path === '*') {
@@ -55,11 +58,15 @@ function hashpath() {
       return router
     },
     redirect(path) {
-      window.location.hash = path
+      location.hash = path
     },
     start() {
-      window.addEventListener('hashchange', () => forward(router))
+      router.hashchangeListener = () => forward(router)
+      window.addEventListener('hashchange', router.hashchangeListener)
       forward(router)
+    },
+    stop() {
+      window.removeEventListener('hashchange', router.hashchangeListener)
     }
   }
   return router

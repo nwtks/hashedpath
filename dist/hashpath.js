@@ -1,9 +1,11 @@
 'use strict';
 
+var location = window.location;
+
 function forward(router) {
   var tos = router.tos;
   var other = router.other;
-  var hash = window.location.hash;
+  var hash = location.hash;
   router.path = hash;
   if (hash) {
     var hp = hash.split('/');
@@ -46,6 +48,7 @@ function hashpath() {
     render: null,
     tos: [],
     other: null,
+    hashchangeListener: null,
     route: function route(path, to) {
       if (path && to) {
         if (path === '*') {
@@ -57,11 +60,15 @@ function hashpath() {
       return router
     },
     redirect: function redirect(path) {
-      window.location.hash = path;
+      location.hash = path;
     },
     start: function start() {
-      window.addEventListener('hashchange', function () { return forward(router); });
+      router.hashchangeListener = function () { return forward(router); };
+      window.addEventListener('hashchange', router.hashchangeListener);
       forward(router);
+    },
+    stop: function stop() {
+      window.removeEventListener('hashchange', router.hashchangeListener);
     }
   };
   return router
