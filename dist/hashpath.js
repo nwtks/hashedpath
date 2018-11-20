@@ -11,7 +11,8 @@ function forward(router) {
     var hp = hash.split('/');
     if (hp.length) {
       for (var i = 0; i < tos.length; i += 1) {
-        var path = tos[i].path;
+        var to = tos[i];
+        var path = to.path;
         if (hp.length === path.length) {
           var param = Object.create(null);
           var found = true;
@@ -27,7 +28,7 @@ function forward(router) {
             }
           }
           if (found) {
-            tos[i].to(param, next);
+            to.to(param, next);
             return
           }
         }
@@ -48,7 +49,7 @@ function hashpath() {
     render: null,
     tos: [],
     other: null,
-    hashchangeListener: null,
+    lstnr: null,
     route: function route(path, to) {
       if (path && to) {
         if (path === '*') {
@@ -63,12 +64,13 @@ function hashpath() {
       location.hash = path;
     },
     start: function start() {
-      router.hashchangeListener = function () { return forward(router); };
-      window.addEventListener('hashchange', router.hashchangeListener);
+      router.lstnr = function () { return forward(router); };
+      window.addEventListener('hashchange', router.lstnr);
       forward(router);
     },
     stop: function stop() {
-      window.removeEventListener('hashchange', router.hashchangeListener);
+      window.removeEventListener('hashchange', router.lstnr);
+      router.lstnr = null;
     }
   };
   return router

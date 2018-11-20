@@ -14,7 +14,7 @@ export default [
     input: 'src/hashpath.js',
     output: {
       name: 'hashpath',
-      file: 'dist/hashpath-umd.js',
+      file: 'dist/hashpath.min.js',
       format: 'umd'
     },
     plugins: [buble(), uglify()]

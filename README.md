@@ -1,3 +1,3 @@
 # hashpath
 
-simple hash router.
+tiny hash router.

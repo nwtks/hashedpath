@@ -9,7 +9,8 @@ function forward(router) {
     const hp = hash.split('/')
     if (hp.length) {
       for (let i = 0; i < tos.length; i += 1) {
-        const path = tos[i].path
+        const to = tos[i]
+        const path = to.path
         if (hp.length === path.length) {
           const param = Object.create(null)
           let found = true
@@ -25,7 +26,7 @@ function forward(router) {
             }
           }
           if (found) {
-            tos[i].to(param, next)
+            to.to(param, next)
             return
           }
         }
@@ -46,7 +47,7 @@ function hashpath() {
     render: null,
     tos: [],
     other: null,
-    hashchangeListener: null,
+    lstnr: null,
     route(path, to) {
       if (path && to) {
         if (path === '*') {
@@ -61,12 +62,13 @@ function hashpath() {
       location.hash = path
     },
     start() {
-      router.hashchangeListener = () => forward(router)
-      window.addEventListener('hashchange', router.hashchangeListener)
+      router.lstnr = () => forward(router)
+      window.addEventListener('hashchange', router.lstnr)
       forward(router)
     },
     stop() {
-      window.removeEventListener('hashchange', router.hashchangeListener)
+      window.removeEventListener('hashchange', router.lstnr)
+      router.lstnr = null
     }
   }
   return router
