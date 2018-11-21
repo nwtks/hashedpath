@@ -43,7 +43,7 @@ function forward(router) {
   }
 }
 
-function hashpath() {
+function hashedpath() {
   var router = {
     path: null,
     render: null,
@@ -76,4 +76,4 @@ function hashpath() {
   return router
 }
 
-module.exports = hashpath;
+module.exports = hashedpath;

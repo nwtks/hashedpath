@@ -3,18 +3,18 @@ import { uglify } from 'rollup-plugin-uglify'
 
 export default [
   {
-    input: 'src/hashpath.js',
+    input: 'src/hashedpath.js',
     output: {
-      file: 'dist/hashpath.js',
+      file: 'dist/hashedpath.js',
       format: 'cjs'
     },
     plugins: [buble()]
   },
   {
-    input: 'src/hashpath.js',
+    input: 'src/hashedpath.js',
     output: {
-      name: 'hashpath',
-      file: 'dist/hashpath.min.js',
+      name: 'hashedpath',
+      file: 'dist/hashedpath.min.js',
       format: 'umd'
     },
     plugins: [buble(), uglify()]

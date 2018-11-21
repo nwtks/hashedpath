@@ -41,7 +41,7 @@ function forward(router) {
   }
 }
 
-function hashpath() {
+function hashedpath() {
   const router = {
     path: null,
     render: null,
@@ -74,4 +74,4 @@ function hashpath() {
   return router
 }
 
-export default hashpath
+export default hashedpath
