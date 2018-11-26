@@ -64,6 +64,9 @@ function hashedpath() {
       location.hash = path;
     },
     start: function start() {
+      if (router.lstnr) {
+        router.stop();
+      }
       router.lstnr = function () { return forward(router); };
       window.addEventListener('hashchange', router.lstnr);
       forward(router);

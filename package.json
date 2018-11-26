@@ -1,10 +1,14 @@
 {
   "name": "hashedpath",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "tiny hash router.",
-  "author": "nwtks",
   "license": "MIT",
   "main": "dist/hashedpath.js",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "author": "nwtks",
   "homepage": "https://github.com/nwtks/hashedpath",
   "repository": {
     "type": "git",
