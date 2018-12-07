@@ -2,10 +2,9 @@
 
 var location = window.location;
 
-function forward(router) {
+var forward = function (router, next, hash) {
   var tos = router.tos;
   var other = router.other;
-  var hash = location.hash;
   router.path = hash;
   if (hash) {
     var hp = hash.split('/');
@@ -18,10 +17,11 @@ function forward(router) {
           var found = true;
           for (var j = 0; j < path.length; j += 1) {
             var p = path[j];
+            var h = hp[j];
             if (p[0] === ':') {
-              param[p.substring(1)] = hp[j];
+              param[p.substring(1)] = h;
             } else {
-              if (p !== hp[j]) {
+              if (p !== h) {
                 found = false;
                 break
               }
@@ -36,21 +36,16 @@ function forward(router) {
     }
   }
   other({}, next);
+};
 
-  function next(f) {
-    router.render = f;
-    router.render();
-  }
-}
-
-function hashedpath() {
+var createRouter = function () {
   var router = {
     path: null,
     render: null,
     tos: [],
     other: null,
     lstnr: null,
-    route: function route(path, to) {
+    route: function (path, to) {
       if (path && to) {
         if (path === '*') {
           router.other = to;
@@ -60,23 +55,25 @@ function hashedpath() {
       }
       return router
     },
-    redirect: function redirect(path) {
-      location.hash = path;
-    },
-    start: function start() {
+    redirect: function (path) { return (location.hash = path); },
+    start: function () {
       if (router.lstnr) {
         router.stop();
       }
-      router.lstnr = function () { return forward(router); };
+      router.lstnr = function () { return forward(router, next, location.hash); };
       window.addEventListener('hashchange', router.lstnr);
-      forward(router);
+      forward(router, next, location.hash);
     },
-    stop: function stop() {
+    stop: function () {
       window.removeEventListener('hashchange', router.lstnr);
       router.lstnr = null;
     }
   };
+  var next = function (f) {
+    router.render = f;
+    router.render();
+  };
   return router
-}
+};
 
-module.exports = hashedpath;
+module.exports = createRouter;

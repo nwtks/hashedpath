@@ -1,9 +1,8 @@
 const location = window.location
 
-function forward(router) {
+const forward = (router, next, hash) => {
   const tos = router.tos
   const other = router.other
-  const hash = location.hash
   router.path = hash
   if (hash) {
     const hp = hash.split('/')
@@ -16,10 +15,11 @@ function forward(router) {
           let found = true
           for (let j = 0; j < path.length; j += 1) {
             const p = path[j]
+            const h = hp[j]
             if (p[0] === ':') {
-              param[p.substring(1)] = hp[j]
+              param[p.substring(1)] = h
             } else {
-              if (p !== hp[j]) {
+              if (p !== h) {
                 found = false
                 break
               }
@@ -34,21 +34,16 @@ function forward(router) {
     }
   }
   other({}, next)
-
-  function next(f) {
-    router.render = f
-    router.render()
-  }
 }
 
-function hashedpath() {
+const createRouter = () => {
   const router = {
     path: null,
     render: null,
     tos: [],
     other: null,
     lstnr: null,
-    route(path, to) {
+    route: (path, to) => {
       if (path && to) {
         if (path === '*') {
           router.other = to
@@ -58,23 +53,25 @@ function hashedpath() {
       }
       return router
     },
-    redirect(path) {
-      location.hash = path
-    },
-    start() {
+    redirect: path => (location.hash = path),
+    start: () => {
       if (router.lstnr) {
         router.stop()
       }
-      router.lstnr = () => forward(router)
+      router.lstnr = () => forward(router, next, location.hash)
       window.addEventListener('hashchange', router.lstnr)
-      forward(router)
+      forward(router, next, location.hash)
     },
-    stop() {
+    stop: () => {
       window.removeEventListener('hashchange', router.lstnr)
       router.lstnr = null
     }
   }
+  const next = f => {
+    router.render = f
+    router.render()
+  }
   return router
 }
 
-export default hashedpath
+export default createRouter
