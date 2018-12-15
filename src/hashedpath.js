@@ -1,70 +1,71 @@
 const location = window.location
 
-const forward = (router, next, hash) => {
-  const tos = router.tos
-  const other = router.other
-  router.path = hash
+const forward = (hash, tos, other, next) => {
   if (hash) {
-    const hp = hash.split('/')
-    if (hp.length) {
-      for (let i = 0; i < tos.length; i += 1) {
-        const to = tos[i]
+    const hashpath = hash.split('/')
+    if (hashpath.length) {
+      const found = tos.some(to => {
         const path = to.path
-        if (hp.length === path.length) {
-          const param = Object.create(null)
-          let found = true
-          for (let j = 0; j < path.length; j += 1) {
-            const p = path[j]
-            const h = hp[j]
-            if (p[0] === ':') {
-              param[p.substring(1)] = h
-            } else {
-              if (p !== h) {
-                found = false
-                break
-              }
-            }
-          }
-          if (found) {
-            to.to(param, next)
-            return
-          }
+        if (hashpath.length !== path.length) {
+          return false
         }
+        const param = Object.create(null)
+        const matched = path.every((p, i) => {
+          const hp = hashpath[i]
+          if (p[0] === ':') {
+            param[p.substring(1)] = hp
+            return true
+          }
+          return p === hp
+        })
+        if (matched) {
+          to.to(param, next)
+        }
+        return matched
+      })
+      if (found) {
+        return
       }
     }
   }
-  other({}, next)
+  if (other) {
+    other({}, next)
+  }
 }
 
 const createRouter = () => {
+  let listener = null
+  const tos = []
+  let other = null
   const router = {
     path: null,
     render: null,
-    tos: [],
-    other: null,
-    lstnr: null,
     route: (path, to) => {
       if (path && to) {
         if (path === '*') {
-          router.other = to
+          other = to
         } else {
-          router.tos.push({ path: path.split('/'), to: to })
+          tos.push({ path: path.split('/'), to: to })
         }
       }
       return router
     },
     redirect: path => (location.hash = path),
     start: () => {
-      if (router.lstnr) {
+      if (listener) {
         router.stop()
       }
-      router.lstnr = () => forward(router, next, location.hash)
-      window.addEventListener('hashchange', router.lstnr)
-      forward(router, next, location.hash)
+      listener = () => {
+        const hash = location.hash
+        router.path = hash
+        forward(hash, tos, other, next)
+      }
+      window.addEventListener('hashchange', listener)
+      listener()
     },
     stop: () => {
-      window.removeEventListener('hashchange', router.lstnr)
-      router.lstnr = null
+      window.removeEventListener('hashchange', listener)
+      listener = null
     }
   }
   const next = f => {

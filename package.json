@@ -1,6 +1,6 @@
 {
   "name": "hashedpath",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "tiny hash router.",
   "license": "MIT",
   "main": "dist/hashedpath.js",
@@ -15,7 +15,7 @@
     "url": "https://github.com/nwtks/hashedpath"
   },
   "devDependencies": {
-    "eslint": "^5.9.0",
+    "eslint": "^5.10.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-node": "^8.0.0",
