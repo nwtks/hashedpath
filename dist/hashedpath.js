@@ -9,24 +9,24 @@ var forward = function (hash, tos, other, next) {
       var found = tos.some(function (to) {
         var path = to.path;
         if (hashpath.length !== path.length) {
-          return false
+          return false;
         }
         var param = Object.create(null);
         var matched = path.every(function (p, i) {
           var hp = hashpath[i];
           if (p[0] === ':') {
             param[p.substring(1)] = hp;
-            return true
+            return true;
           }
-          return p === hp
+          return p === hp;
         });
         if (matched) {
           to.to(param, next);
         }
-        return matched
+        return matched;
       });
       if (found) {
-        return
+        return;
       }
     }
   }
@@ -36,9 +36,9 @@ var forward = function (hash, tos, other, next) {
 };
 
 var createRouter = function () {
-  var listener = null;
   var tos = [];
   var other = null;
+  var listener = null;
   var router = {
     path: null,
     render: null,
@@ -50,9 +50,11 @@ var createRouter = function () {
           tos.push({ path: path.split('/'), to: to });
         }
       }
-      return router
+      return router;
     },
-    redirect: function (path) { return (location.hash = path); },
+    redirect: function (path) {
+      location.hash = path;
+    },
     start: function () {
       if (listener) {
         router.stop();
@@ -74,7 +76,7 @@ var createRouter = function () {
     router.render = f;
     router.render();
   };
-  return router
+  return router;
 };
 
 module.exports = createRouter;

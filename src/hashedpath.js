@@ -1,78 +1,80 @@
-const location = window.location
+const { location } = window;
 
 const forward = (hash, tos, other, next) => {
   if (hash) {
-    const hashpath = hash.split('/')
+    const hashpath = hash.split('/');
     if (hashpath.length) {
-      const found = tos.some(to => {
-        const path = to.path
+      const found = tos.some((to) => {
+        const path = to.path;
         if (hashpath.length !== path.length) {
-          return false
+          return false;
         }
-        const param = Object.create(null)
+        const param = Object.create(null);
         const matched = path.every((p, i) => {
-          const hp = hashpath[i]
+          const hp = hashpath[i];
           if (p[0] === ':') {
-            param[p.substring(1)] = hp
-            return true
+            param[p.substring(1)] = hp;
+            return true;
           }
-          return p === hp
-        })
+          return p === hp;
+        });
         if (matched) {
-          to.to(param, next)
+          to.to(param, next);
         }
-        return matched
-      })
+        return matched;
+      });
       if (found) {
-        return
+        return;
       }
     }
   }
   if (other) {
-    other({}, next)
+    other({}, next);
   }
-}
+};
 
 const createRouter = () => {
-  let listener = null
-  const tos = []
-  let other = null
+  const tos = [];
+  let other = null;
+  let listener = null;
   const router = {
     path: null,
     render: null,
     route: (path, to) => {
       if (path && to) {
         if (path === '*') {
-          other = to
+          other = to;
         } else {
-          tos.push({ path: path.split('/'), to: to })
+          tos.push({ path: path.split('/'), to: to });
         }
       }
-      return router
+      return router;
     },
-    redirect: path => (location.hash = path),
+    redirect: (path) => {
+      location.hash = path;
+    },
     start: () => {
       if (listener) {
-        router.stop()
+        router.stop();
       }
       listener = () => {
-        const hash = location.hash
-        router.path = hash
-        forward(hash, tos, other, next)
-      }
-      window.addEventListener('hashchange', listener)
-      listener()
+        const hash = location.hash;
+        router.path = hash;
+        forward(hash, tos, other, next);
+      };
+      window.addEventListener('hashchange', listener);
+      listener();
     },
     stop: () => {
-      window.removeEventListener('hashchange', listener)
-      listener = null
+      window.removeEventListener('hashchange', listener);
+      listener = null;
     }
-  }
-  const next = f => {
-    router.render = f
-    router.render()
-  }
-  return router
-}
+  };
+  const next = (f) => {
+    router.render = f;
+    router.render();
+  };
+  return router;
+};
 
-export default createRouter
+export default createRouter;
