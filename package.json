@@ -1,6 +1,6 @@
 {
-  "name": "hashedpath",
-  "version": "0.1.4",
+  "name": "@nwtks/hashedpath",
+  "version": "0.2.0",
   "description": "tiny hash router.",
   "license": "MIT",
   "main": "dist/hashedpath.js",
@@ -9,7 +9,6 @@
     "dist"
   ],
   "author": "nwtks",
-  "homepage": "https://github.com/nwtks/hashedpath",
   "repository": {
     "type": "git",
     "url": "https://github.com/nwtks/hashedpath"
